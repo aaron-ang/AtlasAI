@@ -1,0 +1,5 @@
+{ "title": "Design Meeting", "description": "Discuss the new feature designs", "startDate": "2023-11-01T09:00:00.000Z", "endDate": "2023-11-01T11:00:00.000Z", "type": "fixed", "stressLevel": 3.1}
+{ "title": "Code Review", "description": "Review code for new feature implementation", "startDate": "2023-11-02T14:00:00.000Z", "endDate": "2023-11-02T15:00:00.000Z", "type": "flexible", "stressLevel": 2.1}
+{ "title": "Project Planning", "description": "Plan the next sprint tasks", "startDate": "2023-11-05T10:00:00.000Z", "endDate": "2023-11-05T12:00:00.000Z", "type": "fixed", "stressLevel": 1.1}
+{ "title": "Research", "description": "hi","startDate": "2023-11-07T09:00:00.000Z", "endDate": "2023-11-07T11:00:00.000Z", "type": "flexible", "stressLevel": 0.1}
+{ "title": "Client Meeting", "description": "Discuss project requirements with the client", "startDate": "2023-11-10T13:00:00.000Z", "endDate": "2023-11-10T14:00:00.000Z", "type": "fixed", "stressLevel": 0.1}
