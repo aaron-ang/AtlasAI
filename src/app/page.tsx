@@ -1,13 +1,14 @@
 "use client";
-import { useQuery } from "convex/react";
+import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, TextField, Typography, Button } from "@mui/material";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { Doc } from "../../convex/_generated/dataModel";
 import TaskItem from "./components/TaskItem";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
@@ -19,12 +20,94 @@ const darkTheme = createTheme({
 
 export default function Home() {
   const tasks = useQuery(api.tasks.get);
+  const sendTasks = useMutation(api.schedule_tasks.send);
   const [input, setInput] = useState("");
   if (!tasks) {
     return <div>Loading...</div>;
   }
 
-  console.log(tasks);
+  function cleanString(str: string) {
+    const stopwords = ["around", "hour", "need", "hours", "Monday", "Mon", "Tuesday", "Tue", "got", "Wednesday", "Wed", "Thursday", "Thu","Friday", "Fri","Saturday", "Sat", "Sunday", "Sun", "pm", "takes", "mon", "am" ,"i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now", "want"];
+    const regex = new RegExp(`\\b(${stopwords.join("|")})\\b`, "gi");
+    const cleaned = str.replace(regex, '').replace(/\d+/g, '').replace(/\s+/g, ' ').trim();
+
+    return cleaned;
+  }
+
+  const handleButtonClick = async () => {
+    // Do something when the button is clicked
+    console.log('Button clicked, input value:', input);
+    let dayoweek = '';
+    const regex1 = /\b(?:mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?)\b/gi;
+    let match1;
+    if ((match1 = regex1.exec(input)) !== null) {
+        const day = match1[0].toLowerCase();
+        console.log(day)
+        if (day.startsWith('mon')) {
+          dayoweek = '2023-10-30T';
+        } else if (day.startsWith('tue')) {
+          dayoweek = '2023-10-31T';
+        } else if (day.startsWith('wed')) {
+          dayoweek = '2023-11-01T';
+        } else if (day.startsWith('thu')) {
+          dayoweek = '2023-11-02T';
+        } else if (day.startsWith('fri')) {
+          dayoweek = '2023-11-03T';
+        } else if (day.startsWith('sat')) {
+          dayoweek = '2023-11-04T';
+        } else if (day.startsWith('sun')) {
+          dayoweek = '2023-10-29T';
+        }
+    }
+
+    const time = extractTime(input);
+    let timing: string = dayoweek + time + ':00.000Z';
+    const date = new Date(timing);
+    const newDate = new Date(date.getTime() + (7 * 60 * 60 * 1000));
+    const newTimestamp = newDate.toISOString();
+
+    const regex = /(\d+)\s*hours?/;
+    const match = input.match(regex);
+
+    const result = cleanString(input);
+    const newgex = /(\s?)(am|pm)/gi;
+    const final = result.replace(newgex, '');
+     
+    if (match != null){
+      const time_taken = parseInt(match[1], 10);
+      await sendTasks({startTime: newTimestamp, deadline: '', isFixed: true, title: final, duration: time_taken, priority: 1});;
+    }
+    
+    setInput('');
+  };
+
+
+  function extractTime(prompt: string): string | null {
+    const regex = /(\d+)(?::(\d+)|\s*([APMapm]{2}))/; // This regex will match a time like 2, 2pm, 2:00, or 2:00pm
+    const match = prompt.match(regex);
+
+    if (match) {
+        console.log(match)
+        const hour = parseInt(match[1], 10);  // The hour part is in the first capturing group
+        const minute = match[2] ? parseInt(match[2], 10) : 0;  // The minute part is optional and is in the second capturing group
+        const period = match[3] ? match[3].toUpperCase() : null;  // The period (AM/PM) is optional and is in the third capturing group
+
+        // Now convert the extracted hour, minute, and period to a time
+        let militaryHour = hour;
+        if (period) {
+            militaryHour = period === 'PM' && hour < 12 ? hour + 12 : hour;
+            militaryHour = period === 'AM' && hour === 12 ? 0 : militaryHour;
+        }
+
+        // Format the military hour and minute as HH:mm
+        const formattedTime = `${militaryHour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+
+        return formattedTime;
+    }
+
+    return null;  // Return null if no time was found
+}
+
 
   const istaskStart = (task: Doc<"tasks">, day: string, hour: number) => {
     const taskStartDay = dayjs(task.startTime).format("ddd");
@@ -38,7 +121,6 @@ export default function Home() {
       const taskStartHour = dayjs(task.startTime).hour();
       const taskEndHour = Number(taskStartHour) + Number(task.duration); // Explicit conversion
       // console.log(day);
-      console.log(taskStartDay);
 
       return (
         taskStartDay === day &&
@@ -73,6 +155,9 @@ export default function Home() {
                 fullWidth
                 sx={{ color: "#fff" }}
               />
+              <Button variant="contained" color="primary" onClick={handleButtonClick}>
+                Send
+              </Button>
             </div>
           </Box>
         </div>
