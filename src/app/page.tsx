@@ -79,7 +79,7 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInsightModalOpen, setIsInsightModalOpen] = useState(false);
 
-  console.log(reccos);
+
 
   function cleanString(str: string) {
     const stopwords = [
@@ -241,12 +241,20 @@ export default function Home() {
       .replace(/\d+/g, "")
       .replace(/\s+/g, " ")
       .trim();
+    let final = '';
+    if (cleaned.includes("am")) {
+         final = cleaned.replace("am", "");
+    } 
+    if (cleaned.includes("pm")) {
+         final = cleaned.replace("pm", "");
+    }
 
-    return cleaned;
+  
+    return final;
   }
 
   const handleButtonClick = async () => {
-    // Do something when the button is clicked
+
     if (input.trim() === "") {
       setError(true);
       return;
@@ -261,7 +269,7 @@ export default function Home() {
     let match1;
     if ((match1 = regex1.exec(input)) !== null) {
       const day = match1[0].toLowerCase();
-      console.log(day);
+
       if (day.startsWith("mon")) {
         dayoweek = "2023-10-30T";
       } else if (day.startsWith("tue")) {
@@ -289,7 +297,7 @@ export default function Home() {
     const match = input.match(regex);
 
     const final = cleanString(input);
-    final.replace(/\s?(AM|PM)/i, '');
+    
 
     if (match != null && typeof value != "string") {
       const time_taken = parseInt(match[1], 10);
@@ -312,7 +320,6 @@ export default function Home() {
     const match = prompt.match(regex);
 
     if (match) {
-      console.log(match);
       const hour = parseInt(match[1], 10); // The hour part is in the first capturing group
       const minute = match[2] ? parseInt(match[2], 10) : 0; // The minute part is optional and is in the second capturing group
       const period = match[3] ? match[3].toUpperCase() : null; // The period (AM/PM) is optional and is in the third capturing group
