@@ -14,7 +14,6 @@ export default defineSchema({
     reason: v.string(),
   }),
 
-
   tasks: defineTable({
     // Datetime Strings
     startTime: v.string(),

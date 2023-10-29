@@ -77,6 +77,8 @@ export default function Home() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  console.log(reccos);
+
   function cleanString(str: string) {
     const stopwords = [
       "schedule",
@@ -627,7 +629,7 @@ export default function Home() {
                                 }
                                 return (
                                   <div
-                                    className="tw-w-full tw-flex tw-justify-center tw-text-center"
+                                    className="tw-w-[500px]  tw-flex tw-justify-center tw-text-center"
                                     key={day}
                                   >
                                     {/* Content for each hour can be added here */}
