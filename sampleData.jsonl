@@ -1,8 +1,8 @@
-{"startTime": "2023-10-31T02:00:00.000Z", "deadline": "2023-11-01T11:00:00.000Z", "isFixed": false, "title": "Meeting with Alice", "duration": 2, "priority": 1}
+{"startTime": "2023-10-31T02:00:00.000Z", "deadline": "2023-11-01T11:00:00.000Z", "isFixed": false, "title": "Meeting with Alice", "duration": 1, "priority": 1}
 {"startTime": "2023-10-30T18:00:00.000Z", "deadline": "2023-11-00T11:00:00.000Z", "isFixed": false, "title": "Focus time", "duration": 1, "priority": 1}
-{"startTime": "2023-10-30T23:00:00.000Z", "deadline": "2023-11-00T11:00:00.000Z", "isFixed": false, "title": "Daily Standup", "duration": 1, "priority": 1}
-{"startTime": "2023-10-30T20:00:00.000Z", "deadline": "2023-11-00T11:00:00.000Z", "isFixed": false, "title": "Board meeting", "duration": 2, "priority": 1}
-{"startTime": "2023-11-02T03:00:00.000Z", "deadline": "2023-11-02T13:00:00.000Z", "isFixed": true, "title": "Task 2", "duration": 2, "priority": 2}
-{"startTime": "2023-11-03T01:00:00.000Z", "deadline": "2023-11-03T10:00:00.000Z", "isFixed": false, "title": "Task 3", "duration": 2, "priority": 3}
+{"startTime": "2023-10-30T17:00:00.000Z", "deadline": "2023-11-00T11:00:00.000Z", "isFixed": false, "title": "Daily Standup", "duration": 1, "priority": 1}
+{"startTime": "2023-10-30T20:00:00.000Z", "deadline": "2023-11-00T11:00:00.000Z", "isFixed": false, "title": "Board meeting", "duration": 1, "priority": 1}
+{"startTime": "2023-11-02T03:00:00.000Z", "deadline": "2023-11-02T13:00:00.000Z", "isFixed": true, "title": "Task 2", "duration": 1, "priority": 2}
+{"startTime": "2023-11-03T01:00:00.000Z", "deadline": "2023-11-03T10:00:00.000Z", "isFixed": false, "title": "Task 3", "duration": 1, "priority": 3}
 {"startTime": "2023-11-04T04:00:00.000Z", "deadline": "2023-11-04T08:00:00.000Z", "isFixed": true, "title": "Task 4", "duration": 1, "priority": 1}
-{"startTime": "2023-11-05T05:00:00.000Z", "deadline": "2023-11-05T09:00:00.000Z", "isFixed": false, "title": "hacthaton", "duration": 2, "priority": 2}
+{"startTime": "2023-11-05T05:00:00.000Z", "deadline": "2023-11-05T09:00:00.000Z", "isFixed": false, "title": "hacthaton", "duration": 1, "priority": 2}

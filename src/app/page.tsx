@@ -456,7 +456,7 @@ export default function Home() {
                                   key={day}
                                 >
                                   {/* Content for each hour can be added here */}
-                                  <div className="tw-w-full tw-h-12  tw-border-l-2 tw-border-r-2 tw-border-gray-200 tw-bg-[#3f50b5] tw-text-white">
+                                  <div className="tw-w-full tw-h-12   tw-border-gray-200 tw-bg-[#3f50b5] tw-text-white tw-border-2">
                                     {shouldDisplayTitle && (
                                       <TaskItem task={currentTask} />
                                     )}
@@ -531,6 +531,14 @@ export default function Home() {
                                   day,
                                   hour
                                 );
+
+                                const matchingTasks = tasks?.find((task) => {
+                                  return task.title === currentTask?.title;
+                                });
+
+                                const timingChanged =
+                                  matchingTasks?.startTime !==
+                                  currentTask?.startTime;
                                 const shouldDisplayTitle =
                                   currentTask &&
                                   isReccosStart(currentTask, hour);
@@ -542,7 +550,13 @@ export default function Home() {
                                       key={day}
                                     >
                                       {/* Content for each hour can be added here */}
-                                      <div className="tw-w-full tw-h-12  tw-border-l-2 tw-border-r-2 tw-border-gray-200 tw-bg-[#3f50b5] tw-text-white">
+                                      <div
+                                        className={`tw-w-full tw-h-12  tw-border-l-2 tw-border-r-2 tw-border-gray-200 ${
+                                          timingChanged
+                                            ? "tw-bg-[#66023C] "
+                                            : "tw-bg-[#3f50b5]"
+                                        } tw-text-white`}
+                                      >
                                         {shouldDisplayTitle && (
                                           <TaskItem task={currentTask} />
                                         )}
@@ -612,14 +626,22 @@ export default function Home() {
                                   currentTask &&
                                   isReccosStart(currentTask, hour);
 
-                                if (currentTask) {
+                                const matchingTasks = tasks?.find((task) => {
+                                  return task.title === currentTask?.title;
+                                });
+
+                                const timingChanged =
+                                  matchingTasks?.startTime !==
+                                  currentTask?.startTime;
+
+                                if (currentTask && currentTask.reason) {
                                   return (
                                     <div
                                       className="tw-w-[500px] tw-flex tw-justify-center tw-text-center"
                                       key={day}
                                     >
                                       {/* Content for each hour can be added here */}
-                                      <div className="tw-w-full tw-h-12  tw-border-l-2 tw-border-r-2 tw-border-gray-200 tw-bg-[#3f50b5] tw-text-white">
+                                      <div className="tw-w-full tw-h-12  tw-border-l-2 tw-border-r-2 tw-border-gray-200 tw-bg-[#66023C] tw-text-white">
                                         {shouldDisplayTitle && (
                                           <Recommended recco={currentTask} />
                                         )}
