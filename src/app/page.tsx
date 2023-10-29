@@ -405,7 +405,7 @@ export default function Home() {
       <div className="tw-flex tw-flex-row tw-justify-center tw-gap-5">
         {/* Current Insights Modal */}
         <Modal
-          open={true}
+          open={isInsightModalOpen}
           onClose={() => {
             setIsInsightModalOpen(false);
           }}
@@ -853,6 +853,7 @@ export default function Home() {
             </div>
 
             <Button
+              className="tw-text-white tw-bg-[#2f3879fe]"
               variant="contained"
               size="large"
               startIcon={<AddReaction />}
