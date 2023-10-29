@@ -289,6 +289,7 @@ export default function Home() {
     const match = input.match(regex);
 
     const final = cleanString(input);
+    final.replace(/\s?(AM|PM)/i, '');
 
     if (match != null && typeof value != "string") {
       const time_taken = parseInt(match[1], 10);
