@@ -143,13 +143,13 @@ export default function Home() {
               width: "100%",
             }}
           >
-            <Typography variant="h6">Tell Edith Your Schedule</Typography>
+            <Typography variant="h6">Tell Us A New Task:</Typography>
 
             <div className="tw-flex tw-items-center">
               <TextField
                 multiline
                 variant="outlined"
-                placeholder={"Tell me your schedule"}
+                placeholder={"What are you doing today?"}
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 fullWidth
@@ -164,7 +164,7 @@ export default function Home() {
         <div className="">
           <div>
             <h1 className="tw-w-fit tw-text-xl tw-font-bold tw-text-start  tw-mb-4 tw-ml-auto tw-mr-auto tw-mt-3">
-              AI Planner
+              Your Personalized AI Planner
             </h1>
           </div>
           <div className="tw-flex tw-flex-col  tw-px-6 tw-rounded-lg tw-shadow-md tw-overflow-x-auto tw-text-black tw-h-screen">
@@ -262,13 +262,6 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </div>
-        <div className="tw-flex tw-flex-col tw-align-center tw-m-5 gap-5">
-          <div className="tw-flex tw-flex-col tw-justify-start tw-items-center tw-mb-8 tw-mt-5 ">
-            <div>Status</div>
-            <div></div>
-          </div>
-          <div className=""></div>
         </div>
       </div>
     </ThemeProvider>

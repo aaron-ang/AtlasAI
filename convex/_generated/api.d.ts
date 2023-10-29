@@ -15,6 +15,8 @@ import type {
   FunctionReference,
 } from "convex/server";
 import type * as schedule_tasks from "../schedule_tasks";
+import type * as http from "../http";
+import type * as stressScores from "../stressScores";
 import type * as tasks from "../tasks";
 
 /**
@@ -27,6 +29,8 @@ import type * as tasks from "../tasks";
  */
 declare const fullApi: ApiFromModules<{
   schedule_tasks: typeof schedule_tasks;
+  http: typeof http;
+  stressScores: typeof stressScores;
   tasks: typeof tasks;
 }>;
 export declare const api: FilterApi<
