@@ -15,7 +15,7 @@ import { Delete, DoneAll, AddReaction } from "@mui/icons-material";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { Doc } from "../../convex/_generated/dataModel";
-import Recommendations from "./components/recommended";
+import Recommended from "./components/Recommended";
 import TaskItem from "./components/TaskItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -75,8 +75,6 @@ export default function Home() {
   const hasError = touched && value === "";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-
 
   if (!tasks && !reccos) {
     return <div>Loading...</div>;
@@ -359,7 +357,7 @@ export default function Home() {
 
   const isReccosStart = (task: Doc<"recommendedTasks">, hour: number) => {
     const taskStartHour = dayjs(task.startTime).hour();
-    return  taskStartHour === hour;
+    return taskStartHour === hour;
   };
 
   const getReccosForTimeSlot = (day: string, hour: number) => {
@@ -375,7 +373,6 @@ export default function Home() {
 
     return matchedTask;
   };
-
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -393,7 +390,7 @@ export default function Home() {
               marginLeft: "auto",
               marginRight: "auto",
               marginTop: "50px",
-              width: 700,
+              width: 1000,
               bgcolor: "background.paper",
               border: "2px solid #000",
               boxShadow: 24,
@@ -530,10 +527,12 @@ export default function Home() {
                           </div>
                           <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start">
                             {["Mon"].map((day) => {
-                              const currentTask = getReccosForTimeSlot(day, hour);
+                              const currentTask = getReccosForTimeSlot(
+                                day,
+                                hour
+                              );
                               const shouldDisplayTitle =
-                                currentTask &&
-                                isReccosStart(currentTask, hour);
+                                currentTask && isReccosStart(currentTask, hour);
 
                               if (currentTask) {
                                 return (
@@ -567,7 +566,7 @@ export default function Home() {
                   </div>
 
                   {/* Reasons Column */}
-                  <div className="tw-grid tw-grid-cols-25 tw-w-fit tw-ml-auto tw-mr-auto">
+                  <div className="tw-grid tw-grid-cols-25 tw-w-full tw-ml-auto tw-mr-auto">
                     {/* Hour Labels */}
                     <div className="tw-sticky tw-top-0 tw-z-[100]  ">
                       <div className="tw-flex tw-flex-row tw-w-max tw-justify-between tw-align-center ">
@@ -587,7 +586,7 @@ export default function Home() {
                         className="tw-flex tw-flex-row tw-w-max tw-justify-between tw-align-center "
                       >
                         <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start ">
-                          <div className="tw-w-[100px] tw-flex tw-justify-center tw-text-center ">
+                          <div className="tw-w-full tw-flex tw-justify-center tw-text-center ">
                             <div className="tw-w-full tw-h-3  tw-border-l-2 tw-border-r-2"></div>
                           </div>
                         </div>
@@ -602,21 +601,23 @@ export default function Home() {
                         >
                           <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start">
                             {["Mon"].map((day) => {
-                              const currentTask = getReccosForTimeSlot(day, hour);
+                              const currentTask = getReccosForTimeSlot(
+                                day,
+                                hour
+                              );
                               const shouldDisplayTitle =
-                                currentTask &&
-                                isReccosStart(currentTask, hour);
+                                currentTask && isReccosStart(currentTask, hour);
 
                               if (currentTask) {
                                 return (
                                   <div
-                                    className="tw-w-[100px] tw-flex tw-justify-center tw-text-center"
+                                    className="tw-w-[500px] tw-flex tw-justify-center tw-text-center"
                                     key={day}
                                   >
                                     {/* Content for each hour can be added here */}
                                     <div className="tw-w-full tw-h-12  tw-border-l-2 tw-border-r-2 tw-border-gray-200 tw-bg-[#3f50b5] tw-text-white">
                                       {shouldDisplayTitle && (
-                                        <Recommendations recco={currentTask}/>
+                                        <Recommended recco={currentTask} />
                                       )}
                                     </div>
                                   </div>
@@ -624,7 +625,7 @@ export default function Home() {
                               }
                               return (
                                 <div
-                                  className="tw-w-[100px] tw-flex tw-justify-center tw-text-center"
+                                  className="tw-w-full tw-flex tw-justify-center tw-text-center"
                                   key={day}
                                 >
                                   {/* Content for each hour can be added here */}
