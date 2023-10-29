@@ -10,6 +10,7 @@ import {
   Typography,
   Button,
   IconButton,
+  CircularProgress,
 } from "@mui/material";
 import { Delete, DoneAll, AddReaction } from "@mui/icons-material";
 import { useState } from "react";
@@ -25,6 +26,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import utc from "dayjs/plugin/utc"; // UTC plugin
 import timezone from "dayjs/plugin/timezone";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+import RecommendedCard from "./components/RecommendedCard";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -75,10 +77,9 @@ export default function Home() {
   const hasError = touched && value === "";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInsightModalOpen, setIsInsightModalOpen] = useState(false);
 
-  if (!tasks && !reccos) {
-    return <div>Loading...</div>;
-  }
+  console.log(reccos);
 
   function cleanString(str: string) {
     const stopwords = [
@@ -374,9 +375,85 @@ export default function Home() {
     return matchedTask;
   };
 
+  // Recommended Tasks.
+  const recommendeds = [
+    {
+      title: "Take a Breather",
+      description:
+        "Consider taking the time to sit back and relax before your next big task",
+      imageLink:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5eTq3sBaHpSG3iha-L-H1CfmGna5Y0gu6ENcT-3BcIt9ralYeJ-lf2LTOjHkz5hU9uM0&usqp=CAU",
+    },
+    {
+      title: "Powernap",
+      description:
+        "Taking a well-needed powernap could be the solution to lowering your high stress levels",
+      imageLink:
+        "https://th.bing.com/th/id/OIP.YJc-kuMwxJVCTV9_WrEaVAHaEa?w=272&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+    },
+    {
+      title: "Meditate",
+      description:
+        "Meditation is a wonderful method of reconnecting with yourself in a world filled with distractions",
+      imageLink:
+        "https://th.bing.com/th/id/OIP.ljI8sD3kVR3DCW2YevxW0QHaEj?pid=ImgDet&rs=1",
+    },
+  ];
+
   return (
     <ThemeProvider theme={darkTheme}>
       <div className="tw-flex tw-flex-row tw-justify-center tw-gap-5">
+        {/* Current Insights Modal */}
+        <Modal
+          open={isInsightModalOpen}
+          onClose={() => {
+            setIsInsightModalOpen(false);
+          }}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: "50px",
+              width: 1000,
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            <div className="tw-text-center tw-text-white tw-mb-10">
+              <h4 className="tw-text-3xl">Your Insights</h4>
+            </div>
+
+            <div className="tw-grid tw-grid-cols-2 tw-justify-items-center tw-items-center">
+              <div className="tw-text-white">
+                <h3 className="tw-text-2xl tw-font-semibold">Latest Stress Score:</h3>
+                <h4 className="tw-text-xl tw-text-center">54</h4>
+                <h5 className="tw-text-sm tw-text-center">14:05</h5>
+              </div>
+
+              <div className="">
+                <h3 className="tw-text-2xl tw-text-white tw-font-semibold tw-text-center tw-mb-5">Try these out:</h3>
+
+                <div className="tw-h-[400px] tw-overflow-auto">
+                  {recommendeds.map((recommended, index) => {
+                    return (
+                      <RecommendedCard
+                        key={index}
+                        title={recommended.title}
+                        description={recommended.description}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </Box>
+        </Modal>
+
         <Modal
           open={isModalOpen}
           onClose={() => {
@@ -435,7 +512,7 @@ export default function Home() {
                   </div>
 
                   <div className="tw-flex tw-flex-col tw-justify-between tw-w-max">
-                    {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
+                    {Array.from({ length: 17 }, (_, i) => i + 7).map((hour) => (
                       <div
                         key={hour}
                         className="tw-flex tw-row tw-items-center"
@@ -457,7 +534,7 @@ export default function Home() {
                                   key={day}
                                 >
                                   {/* Content for each hour can be added here */}
-                                  <div className="tw-w-full tw-h-12  tw-border-l-2 tw-border-r-2 tw-border-gray-200 tw-bg-[#3f50b5] tw-text-white">
+                                  <div className="tw-w-full tw-h-12   tw-border-gray-200 tw-bg-[#3f50b5] tw-text-white tw-border-2">
                                     {shouldDisplayTitle && (
                                       <TaskItem task={currentTask} />
                                     )}
@@ -517,51 +594,68 @@ export default function Home() {
                     </div>
 
                     <div className="tw-flex tw-flex-col tw-justify-between tw-w-max">
-                      {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
-                        <div
-                          key={hour}
-                          className="tw-flex tw-row tw-items-center"
-                        >
-                          <div className="tw-h-12 tw-flex tw-items-center tw-justify-start tw-w-[70px] tw-text-white">
-                            {hour}:00
-                          </div>
-                          <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start">
-                            {["Mon"].map((day) => {
-                              const currentTask = getReccosForTimeSlot(
-                                day,
-                                hour
-                              );
-                              const shouldDisplayTitle =
-                                currentTask && isReccosStart(currentTask, hour);
+                      {Array.from({ length: 17 }, (_, i) => i + 7).map(
+                        (hour) => (
+                          <div
+                            key={hour}
+                            className="tw-flex tw-row tw-items-center"
+                          >
+                            <div className="tw-h-12 tw-flex tw-items-center tw-justify-start tw-w-[70px] tw-text-white">
+                              {hour}:00
+                            </div>
+                            <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start">
+                              {["Mon"].map((day) => {
+                                const currentTask = getReccosForTimeSlot(
+                                  day,
+                                  hour
+                                );
 
-                              if (currentTask) {
+                                const matchingTasks = tasks?.find((task) => {
+                                  return task.title === currentTask?.title;
+                                });
+
+                                const timingChanged =
+                                  matchingTasks?.startTime !==
+                                  currentTask?.startTime;
+                                const shouldDisplayTitle =
+                                  currentTask &&
+                                  isReccosStart(currentTask, hour);
+
+                                if (currentTask) {
+                                  return (
+                                    <div
+                                      className="tw-w-[100px] tw-flex tw-justify-center tw-text-center"
+                                      key={day}
+                                    >
+                                      {/* Content for each hour can be added here */}
+                                      <div
+                                        className={`tw-w-full tw-h-12  tw-border-l-2 tw-border-r-2 tw-border-gray-200 ${
+                                          timingChanged
+                                            ? "tw-bg-[#66023C] "
+                                            : "tw-bg-[#3f50b5]"
+                                        } tw-text-white`}
+                                      >
+                                        {shouldDisplayTitle && (
+                                          <TaskItem task={currentTask} />
+                                        )}
+                                      </div>
+                                    </div>
+                                  );
+                                }
                                 return (
                                   <div
                                     className="tw-w-[100px] tw-flex tw-justify-center tw-text-center"
                                     key={day}
                                   >
                                     {/* Content for each hour can be added here */}
-                                    <div className="tw-w-full tw-h-12  tw-border-l-2 tw-border-r-2 tw-border-gray-200 tw-bg-[#3f50b5] tw-text-white">
-                                      {shouldDisplayTitle && (
-                                        <TaskItem task={currentTask} />
-                                      )}
-                                    </div>
+                                    <div className="tw-w-full tw-h-12 tw-border-b-2 tw-border-l-2 tw-border-r-2 tw-text-white  "></div>
                                   </div>
                                 );
-                              }
-                              return (
-                                <div
-                                  className="tw-w-[100px] tw-flex tw-justify-center tw-text-center"
-                                  key={day}
-                                >
-                                  {/* Content for each hour can be added here */}
-                                  <div className="tw-w-full tw-h-12 tw-border-b-2 tw-border-l-2 tw-border-r-2 tw-text-white  "></div>
-                                </div>
-                              );
-                            })}
+                              })}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </div>
 
@@ -594,48 +688,59 @@ export default function Home() {
                     </div>
 
                     <div className="tw-flex tw-flex-col tw-justify-between tw-w-max">
-                      {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
-                        <div
-                          key={hour}
-                          className="tw-flex tw-row tw-items-center"
-                        >
-                          <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start">
-                            {["Mon"].map((day) => {
-                              const currentTask = getReccosForTimeSlot(
-                                day,
-                                hour
-                              );
-                              const shouldDisplayTitle =
-                                currentTask && isReccosStart(currentTask, hour);
+                      {Array.from({ length: 17 }, (_, i) => i + 7).map(
+                        (hour) => (
+                          <div
+                            key={hour}
+                            className="tw-flex tw-row tw-items-center"
+                          >
+                            <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start">
+                              {["Mon"].map((day) => {
+                                const currentTask = getReccosForTimeSlot(
+                                  day,
+                                  hour
+                                );
+                                const shouldDisplayTitle =
+                                  currentTask &&
+                                  isReccosStart(currentTask, hour);
 
-                              if (currentTask) {
+                                const matchingTasks = tasks?.find((task) => {
+                                  return task.title === currentTask?.title;
+                                });
+
+                                const timingChanged =
+                                  matchingTasks?.startTime !==
+                                  currentTask?.startTime;
+
+                                if (currentTask && currentTask.reason) {
+                                  return (
+                                    <div
+                                      className="tw-w-[500px] tw-flex tw-justify-center tw-text-center"
+                                      key={day}
+                                    >
+                                      {/* Content for each hour can be added here */}
+                                      <div className="tw-w-full tw-h-12  tw-border-l-2 tw-border-r-2 tw-border-gray-200 tw-bg-[#66023C] tw-text-white">
+                                        {shouldDisplayTitle && (
+                                          <Recommended recco={currentTask} />
+                                        )}
+                                      </div>
+                                    </div>
+                                  );
+                                }
                                 return (
                                   <div
-                                    className="tw-w-[500px] tw-flex tw-justify-center tw-text-center"
+                                    className="tw-w-[500px]  tw-flex tw-justify-center tw-text-center"
                                     key={day}
                                   >
                                     {/* Content for each hour can be added here */}
-                                    <div className="tw-w-full tw-h-12  tw-border-l-2 tw-border-r-2 tw-border-gray-200 tw-bg-[#3f50b5] tw-text-white">
-                                      {shouldDisplayTitle && (
-                                        <Recommended recco={currentTask} />
-                                      )}
-                                    </div>
+                                    <div className="tw-w-full tw-h-12 tw-border-b-2 tw-border-l-2 tw-border-r-2 tw-text-white  "></div>
                                   </div>
                                 );
-                              }
-                              return (
-                                <div
-                                  className="tw-w-full tw-flex tw-justify-center tw-text-center"
-                                  key={day}
-                                >
-                                  {/* Content for each hour can be added here */}
-                                  <div className="tw-w-full tw-h-12 tw-border-b-2 tw-border-l-2 tw-border-r-2 tw-text-white  "></div>
-                                </div>
-                              );
-                            })}
+                              })}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </div>
                 </div>
@@ -728,19 +833,26 @@ export default function Home() {
                 Insights
               </div>
               <OverlayScrollbarsComponent style={{ height: "400px" }}>
-                <div className="tw-text-base tw-space-y-2">
-                  {/* Assuming insights is an array of strings */}
+                {!tasks ? (
+                  <div className="tw-w-full tw-flex tw-justify-center">
+                    <CircularProgress />
+                  </div>
+                ) : (
+                  <div className="tw-text-base tw-space-y-2">
+                    {/* Assuming insights is an array of strings */}
 
-                  {insights.map((insight, index) => (
-                    <div key={index} className="tw-p-1">
-                      {insight}
-                    </div>
-                  ))}
-                </div>
+                    {insights.map((insight, index) => (
+                      <div key={index} className="tw-p-1">
+                        {insight}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </OverlayScrollbarsComponent>
             </div>
 
             <Button
+              className="tw-text-white tw-bg-[#2f3879fe]"
               variant="contained"
               size="large"
               startIcon={<AddReaction />}
@@ -757,6 +869,7 @@ export default function Home() {
               Calendar
             </h1>
           </div>
+
           <div className="tw-flex tw-flex-col tw-px-6 tw-rounded-lg tw-shadow-md tw-overflow-x-auto tw-text-black tw-h-[80vh]">
             <div className="tw-grid tw-grid-cols-25 tw-w-fit tw-ml-auto tw-mr-auto">
               {/* Hour Labels */}
@@ -784,9 +897,19 @@ export default function Home() {
                   className="tw-flex tw-flex-row tw-w-max tw-justify-between tw-align-center "
                 >
                   <div className="tw-h-3 tw-flex tw-items-center tw-justify-start tw-w-[50px]"></div>
-                  <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start ">
-                    {daysOfWeek.map((day) => {
-                      if (day === "Sun") {
+                  {tasks && (
+                    <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start ">
+                      {daysOfWeek.map((day) => {
+                        if (day === "Sun") {
+                          return (
+                            <div
+                              key={day}
+                              className="tw-w-[100px] tw-flex tw-justify-center tw-text-center "
+                            >
+                              <div className="tw-w-full tw-h-3  tw-border-l-2"></div>
+                            </div>
+                          );
+                        }
                         return (
                           <div
                             key={day}
@@ -795,61 +918,59 @@ export default function Home() {
                             <div className="tw-w-full tw-h-3  tw-border-l-2"></div>
                           </div>
                         );
-                      }
-                      return (
-                        <div
-                          key={day}
-                          className="tw-w-[100px] tw-flex tw-justify-center tw-text-center "
-                        >
-                          <div className="tw-w-full tw-h-3  tw-border-l-2"></div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="tw-flex tw-flex-col tw-justify-between tw-w-max">
-                {Array.from({ length: 24 }, (_, i) => i).map((hour) => (
-                  <div key={hour} className="tw-flex tw-row tw-items-center">
-                    <div className="tw-h-12 tw-flex tw-items-center tw-justify-start tw-w-[50px] tw-text-white">
-                      {hour}:00
-                    </div>
-                    <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start">
-                      {daysOfWeek.map((day) => {
-                        const currentTask = getTaskForTimeSlot(day, hour);
-                        const shouldDisplayTitle =
-                          currentTask && istaskStart(currentTask, day, hour);
+              {!tasks ? (
+                <div className="tw-flex tw-w-full tw-justify-center tw-mt-10 ">
+                  <CircularProgress />
+                </div>
+              ) : (
+                <div className="tw-flex tw-flex-col tw-justify-between tw-w-max">
+                  {Array.from({ length: 17 }, (_, i) => i + 7).map((hour) => (
+                    <div key={hour} className="tw-flex tw-row tw-items-center">
+                      <div className="tw-h-12 tw-flex tw-items-center tw-justify-start tw-w-[50px] tw-text-white">
+                        {hour}:00
+                      </div>
+                      <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start">
+                        {daysOfWeek.map((day) => {
+                          const currentTask = getTaskForTimeSlot(day, hour);
+                          const shouldDisplayTitle =
+                            currentTask && istaskStart(currentTask, day, hour);
 
-                        if (currentTask) {
+                          if (currentTask) {
+                            return (
+                              <div
+                                className="tw-w-[100px] tw-flex tw-justify-center tw-text-center"
+                                key={day}
+                              >
+                                {/* Content for each hour can be added here */}
+                                <div className="tw-w-full tw-h-12  tw-border-l-2 tw-border-gray-200 tw-bg-[#3f50b5] tw-text-white">
+                                  {shouldDisplayTitle && (
+                                    <TaskItem task={currentTask} />
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          }
                           return (
                             <div
                               className="tw-w-[100px] tw-flex tw-justify-center tw-text-center"
                               key={day}
                             >
                               {/* Content for each hour can be added here */}
-                              <div className="tw-w-full tw-h-12  tw-border-l-2 tw-border-gray-200 tw-bg-[#3f50b5] tw-text-white">
-                                {shouldDisplayTitle && (
-                                  <TaskItem task={currentTask} />
-                                )}
-                              </div>
+                              <div className="tw-w-full tw-h-12 tw-border-b-2 tw-border-l-2 tw-text-white  "></div>
                             </div>
                           );
-                        }
-                        return (
-                          <div
-                            className="tw-w-[100px] tw-flex tw-justify-center tw-text-center"
-                            key={day}
-                          >
-                            {/* Content for each hour can be added here */}
-                            <div className="tw-w-full tw-h-12 tw-border-b-2 tw-border-l-2 tw-text-white  "></div>
-                          </div>
-                        );
-                      })}
+                        })}
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
