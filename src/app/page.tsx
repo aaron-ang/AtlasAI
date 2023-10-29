@@ -32,6 +32,7 @@ const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { getCurrentHourInSanFrancisco } from "../../convex/stressScores";
+import SpotifyDrawer from "./components/SpotifyDrawer";
 
 const darkTheme = createTheme({
   palette: {
@@ -79,8 +80,6 @@ export default function Home() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isInsightModalOpen, setIsInsightModalOpen] = useState(true);
-
-
 
   function cleanString(str: string) {
     const stopwords = [
@@ -242,20 +241,18 @@ export default function Home() {
       .replace(/\d+/g, "")
       .replace(/\s+/g, " ")
       .trim();
-    let final = '';
+    let final = "";
     if (cleaned.includes("am")) {
-         final = cleaned.replace("am", "");
-    } 
+      final = cleaned.replace("am", "");
+    }
     if (cleaned.includes("pm")) {
-         final = cleaned.replace("pm", "");
+      final = cleaned.replace("pm", "");
     }
 
-  
     return final;
   }
 
   const handleButtonClick = async () => {
-
     if (input.trim() === "") {
       setError(true);
       return;
@@ -298,7 +295,7 @@ export default function Home() {
     const match = input.match(regex);
 
     const final = cleanString(input);
-    
+    final.replace(/\s?(AM|PM)/i, "");
 
     if (match != null && typeof value != "string") {
       const time_taken = parseInt(match[1], 10);
@@ -406,7 +403,7 @@ export default function Home() {
     {
       title: "Listen to music",
       description:
-        "Consider taking the time to sit back and relax before your next big task",
+        "Before you dive into your next big task, why not take a moment to unwind? We've custom-tailored a playlist specifically aligned with your current stress levels to help you relax and refocus. Give it a listen and conquer your meeting with renewed energy!",
     },
 
     {
@@ -802,10 +799,11 @@ export default function Home() {
               width: "100%",
             }}
           >
-            <h1 className="tw-w-fit tw-text-xl tw-font-bold tw-text-start  tw-mb-4 tw-ml-auto tw-mr-auto ">
-              Your Personalized AI Planner
-            </h1>
-
+            <div className="tw-flex">
+              <h1 className="tw-w-fit tw-text-xl tw-font-bold tw-text-start  tw-mb-4 tw-ml-auto tw-mr-auto ">
+                Your Personalized AI Planner
+              </h1>
+            </div>
             <div className="tw-flex tw-items-center tw-w-full">
               <div className="tw-w-full tw-mr-5">
                 <TextField
@@ -886,10 +884,11 @@ export default function Home() {
         </div>
 
         <div className="">
-          <div>
+          <div className="tw-flex tw-justify-center tw-items-center">
             <h1 className="tw-w-fit tw-text-xl tw-font-bold tw-text-start  tw-mb-4 tw-ml-auto tw-mr-auto tw-mt-3">
               Calendar
             </h1>
+            <SpotifyDrawer stress={0} />
           </div>
 
           <div className="tw-flex tw-flex-col tw-px-6 tw-rounded-lg tw-shadow-md tw-overflow-x-auto tw-text-black tw-h-[80vh]">

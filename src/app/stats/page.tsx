@@ -235,7 +235,6 @@ export default function Stats() {
           </div>
         </div>
       </div>
-      <SpotifyDrawer stress={stressScore} />
     </div>
   );
 }

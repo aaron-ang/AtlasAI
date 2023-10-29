@@ -5,6 +5,7 @@ import ConvexClientProvider from "./ConvexClientProvider";
 import Image from "next/image";
 
 import "overlayscrollbars/overlayscrollbars.css";
+import SpotifyDrawer from "./components/SpotifyDrawer";
 
 const inter = Inter({ subsets: ["latin"] });
 

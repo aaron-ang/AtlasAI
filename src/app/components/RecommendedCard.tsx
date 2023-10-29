@@ -1,4 +1,5 @@
 import { Card, CardMedia, CardContent, Typography } from "@mui/material";
+import SpotifyDrawer from "./SpotifyDrawer";
 
 export type RecommendedCardProps = {
   title: string;

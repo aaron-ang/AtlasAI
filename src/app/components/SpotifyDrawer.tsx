@@ -20,7 +20,7 @@ export default function SpotifyDrawer({ stress }: SpotifyDrawerProps) {
   useEffect(() => {
     setState({
       ...state,
-      right: stress > 40 ? true : false,
+      right: false,
     });
   }, [stress]);
 
@@ -48,6 +48,7 @@ export default function SpotifyDrawer({ stress }: SpotifyDrawerProps) {
       <div
         style={{
           height: "100%",
+          zIndex: 100000,
         }}
       >
         <SpotifyPlayer playlistId="6lHIfp4RnvAoXxSeLzIY49" />
