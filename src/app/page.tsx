@@ -703,12 +703,12 @@ export default function Home() {
                 )}
               </FormControl>
             </div>
-            <div className="tw-p-6 tw-bg-white tw-rounded-lg tw-shadow-lg">
-              <div className="tw-text-2xl tw-font-semibold tw-text-gray-800 tw-mb-4">
+            <div className="tw-p-6 tw-bg-[#616ED3] tw-rounded-lg tw-shadow-lg tw-text-white">
+              <div className="tw-text-2xl tw-font-semibold tw-mb-4">
                 Insights
               </div>
               <OverlayScrollbarsComponent style={{ height: "400px" }}>
-                <div className="tw-text-base tw-text-gray-700 tw-space-y-2">
+                <div className="tw-text-base tw-space-y-2">
                   {/* Assuming insights is an array of strings */}
 
                   {insights.map((insight, index) => (
