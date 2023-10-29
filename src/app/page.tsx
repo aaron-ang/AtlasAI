@@ -693,7 +693,7 @@ export default function Home() {
                   sx={{ color: "#fff" }}
                 />
               </div>
-              <IconButton>
+              <IconButton onClick={handleButtonClick}>
                 <SendIcon />
               </IconButton>
             </div>
