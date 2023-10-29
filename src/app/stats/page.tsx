@@ -19,6 +19,7 @@ import timezone from "dayjs/plugin/timezone";
 import dayjs from "dayjs";
 import RecommendedCard from "../components/RecommendedCard";
 import SpotifyDrawer from "../components/SpotifyDrawer";
+import { Typography } from "@mui/material";
 
 ChartJS.register(
   CategoryScale,
@@ -173,20 +174,42 @@ export default function Stats() {
       </div>
 
       <div className="tw-mt-10">
-        <h1 className="tw-text-4xl tw-font-bold tw-text-center">
-          Recommendations
-        </h1>
-        <div className="tw-grid tw-grid-cols-3 tw-justify-items-center tw-items-center tw-mt-10">
-          {recommendeds.map((recommended, index) => {
-            return (
-              <RecommendedCard
-                key={index}
-                title={recommended.title}
-                description={recommended.description}
-                imageLink={recommended.imageLink}
-              />
-            );
-          })}
+        <div className="tw-w-full tw-flex tw-justify-center">
+          <div>
+            <Typography variant="h5" className="tw-text-center">
+              Sleep Insights
+            </Typography>
+            <div className="tw-flex tw-flex-col tw-justify-items-center tw-items-center tw-mt-10">
+              {recommendeds.map((recommended, index) => {
+                return (
+                  <RecommendedCard
+                    key={index}
+                    title={recommended.title}
+                    description={recommended.description}
+                    imageLink={recommended.imageLink}
+                  />
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <Typography variant="h5" className="tw-text-center">
+              Stress Insights
+            </Typography>
+            <div className="tw-flex tw-flex-col tw-justify-items-center tw-items-center tw-mt-10">
+              {recommendeds.map((recommended, index) => {
+                return (
+                  <RecommendedCard
+                    key={index}
+                    title={recommended.title}
+                    description={recommended.description}
+                    imageLink={recommended.imageLink}
+                  />
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
       <SpotifyDrawer stress={stressScore} />
