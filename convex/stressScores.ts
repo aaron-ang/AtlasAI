@@ -17,7 +17,6 @@ export function getCurrentHourInSanFrancisco(): number {
   return nowInSanFrancisco.getUTCHours();
 }
 
-const currentHour = getCurrentHourInSanFrancisco();
 function calculateStress(heartData: any) {
   const avgHrvSdnn = heartData.heart_rate_data.summary.avg_hrv_sdnn;
   const avgHrBpm = heartData.heart_rate_data.summary.avg_hr_bpm;
