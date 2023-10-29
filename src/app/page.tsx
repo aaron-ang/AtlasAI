@@ -13,7 +13,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Delete, DoneAll, AddReaction } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { Doc } from "../../convex/_generated/dataModel";
 import Recommended from "./components/Recommended";
@@ -31,6 +31,7 @@ import RecommendedCard from "./components/RecommendedCard";
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { getCurrentHourInSanFrancisco } from "../../convex/stressScores";
 
 const darkTheme = createTheme({
   palette: {
@@ -77,7 +78,7 @@ export default function Home() {
   const hasError = touched && value === "";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isInsightModalOpen, setIsInsightModalOpen] = useState(false);
+  const [isInsightModalOpen, setIsInsightModalOpen] = useState(true);
 
 
 
@@ -383,28 +384,35 @@ export default function Home() {
     return matchedTask;
   };
 
+  const stressData = useQuery(api.stressScores.getStressScores, {
+    hour: getCurrentHourInSanFrancisco(),
+  });
+  const stressScore = stressData ? stressData[0]?.score : 0;
+  const stressLastUpdated = stressData ? stressData[0]?._creationTime : 0;
+  const dateTimeUTCStress = dayjs(stressLastUpdated);
+
+  const dateTimeSFStress = dateTimeUTCStress.tz("America/Los_Angeles");
+
+  const formattedStressDateTime = dateTimeSFStress.format(" h:mm A");
+
+  useEffect(() => {
+    if (stressScore > 50) {
+      setIsInsightModalOpen(true);
+    }
+  }, [stressScore]);
+
   // Recommended Tasks.
   const recommendeds = [
     {
-      title: "Take a Breather",
+      title: "Listen to music",
       description:
         "Consider taking the time to sit back and relax before your next big task",
-      imageLink:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5eTq3sBaHpSG3iha-L-H1CfmGna5Y0gu6ENcT-3BcIt9ralYeJ-lf2LTOjHkz5hU9uM0&usqp=CAU",
     },
-    {
-      title: "Powernap",
-      description:
-        "Taking a well-needed powernap could be the solution to lowering your high stress levels",
-      imageLink:
-        "https://th.bing.com/th/id/OIP.YJc-kuMwxJVCTV9_WrEaVAHaEa?w=272&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
-    },
+
     {
       title: "Meditate",
       description:
         "Meditation is a wonderful method of reconnecting with yourself in a world filled with distractions",
-      imageLink:
-        "https://th.bing.com/th/id/OIP.ljI8sD3kVR3DCW2YevxW0QHaEj?pid=ImgDet&rs=1",
     },
   ];
 
@@ -438,13 +446,19 @@ export default function Home() {
 
             <div className="tw-grid tw-grid-cols-2 tw-justify-items-center tw-items-center">
               <div className="tw-text-white">
-                <h3 className="tw-text-2xl tw-font-semibold">Latest Stress Score:</h3>
-                <h4 className="tw-text-xl tw-text-center">54</h4>
-                <h5 className="tw-text-sm tw-text-center">14:05</h5>
+                <h3 className="tw-text-2xl tw-font-semibold">
+                  Latest Stress Score:
+                </h3>
+                <h4 className="tw-text-xl tw-text-center">{stressScore}</h4>
+                <h5 className="tw-text-sm tw-text-center">
+                  {formattedStressDateTime}
+                </h5>
               </div>
 
               <div className="">
-                <h3 className="tw-text-2xl tw-text-white tw-font-semibold tw-text-center tw-mb-5">Try these out:</h3>
+                <h3 className="tw-text-2xl tw-text-white tw-font-semibold tw-text-center tw-mb-5">
+                  Try these out:
+                </h3>
 
                 <div className="tw-h-[400px] tw-overflow-auto">
                   {recommendeds.map((recommended, index) => {
