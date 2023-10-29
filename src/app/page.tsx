@@ -26,6 +26,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import utc from "dayjs/plugin/utc"; // UTC plugin
 import timezone from "dayjs/plugin/timezone";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+import RecommendedCard from "./components/RecommendedCard";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -76,6 +77,7 @@ export default function Home() {
   const hasError = touched && value === "";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isInsightModalOpen, setIsInsightModalOpen] = useState(false);
 
   console.log(reccos);
 
@@ -373,9 +375,86 @@ export default function Home() {
     return matchedTask;
   };
 
+  // Recommended Tasks.
+  const recommendeds = [
+    {
+      title: "Take a Breather",
+      description:
+        "Consider taking the time to sit back and relax before your next big task",
+      imageLink:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5eTq3sBaHpSG3iha-L-H1CfmGna5Y0gu6ENcT-3BcIt9ralYeJ-lf2LTOjHkz5hU9uM0&usqp=CAU",
+    },
+    {
+      title: "Powernap",
+      description:
+        "Taking a well-needed powernap could be the solution to lowering your high stress levels",
+      imageLink:
+        "https://th.bing.com/th/id/OIP.YJc-kuMwxJVCTV9_WrEaVAHaEa?w=272&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
+    },
+    {
+      title: "Meditate",
+      description:
+        "Meditation is a wonderful method of reconnecting with yourself in a world filled with distractions",
+      imageLink:
+        "https://th.bing.com/th/id/OIP.ljI8sD3kVR3DCW2YevxW0QHaEj?pid=ImgDet&rs=1",
+    },
+  ];
+
   return (
     <ThemeProvider theme={darkTheme}>
       <div className="tw-flex tw-flex-row tw-justify-center tw-gap-5">
+        {/* Current Insights Modal */}
+        <Modal
+          open={true}
+          onClose={() => {
+            setIsInsightModalOpen(false);
+          }}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: "50px",
+              width: 1000,
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            <div className="tw-text-center tw-text-white tw-mb-10">
+              <h4 className="tw-text-3xl">Your Insights</h4>
+            </div>
+
+            <div className="tw-grid tw-grid-cols-2 tw-justify-items-center tw-items-center">
+              <div className="tw-text-white">
+                <h3 className="tw-text-2xl tw-font-semibold">Latest Stress Score:</h3>
+                <h4 className="tw-text-xl tw-text-center">54</h4>
+                <h5 className="tw-text-sm tw-text-center">14:05</h5>
+              </div>
+
+              <div className="">
+                <h3 className="tw-text-2xl tw-text-white tw-font-semibold tw-text-center tw-mb-5">Try these out:</h3>
+
+                <div className="tw-h-[400px] tw-overflow-auto">
+                  {recommendeds.map((recommended, index) => {
+                    return (
+                      <RecommendedCard
+                        key={index}
+                        title={recommended.title}
+                        description={recommended.description}
+                        imageLink={recommended.imageLink}
+                      />
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </Box>
+        </Modal>
+
         <Modal
           open={isModalOpen}
           onClose={() => {
