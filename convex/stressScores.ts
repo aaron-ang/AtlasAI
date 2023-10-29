@@ -1,4 +1,4 @@
-import { httpAction, internalMutation } from "./_generated/server";
+import { httpAction, internalMutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
 
@@ -8,6 +8,22 @@ interface HeartSummaryData {
   max_hr_bpm: number;
   min_hr_bpm: number;
 }
+
+export function getCurrentHourInSanFrancisco(): number {
+  // Get current UTC time in milliseconds
+  const nowUTC = new Date().getTime();
+
+  // Calculate the offset for San Francisco (PDT/PST is UTC-7/UTC-8)
+  // Note: This won't adjust for Daylight Saving Time
+  const offsetInMilliseconds = 7 * 60 * 60 * 1000;
+
+  // Convert to San Francisco time
+  const nowInSanFrancisco = new Date(nowUTC - offsetInMilliseconds);
+
+  return nowInSanFrancisco.getUTCHours();
+}
+
+const currentHour = getCurrentHourInSanFrancisco();
 function calculateStress(heartData: any) {
   const avgHrvSdnn = heartData.heart_rate_data.summary.avg_hrv_sdnn;
   const avgHrBpm = heartData.heart_rate_data.summary.avg_hr_bpm;
@@ -48,11 +64,10 @@ export const getTerraAPI = httpAction(async (ctx, request) => {
     const heartData = data.data[0].heart_data;
     const stress = calculateStress(heartData);
 
-    // const nowInSanFrancisco = DateTime.now().setZone("America/Los_Angeles");
-    // const hourInSanFrancisco: number = nowInSanFrancisco.hour;
+    const currentHour = getCurrentHourInSanFrancisco();
 
     await ctx.runMutation(internal.stressScores.addStressScores, {
-      hour: 1,
+      hour: currentHour,
       score: stress,
     });
   } else {
@@ -72,5 +87,16 @@ export const addStressScores = internalMutation({
   },
   handler: async (ctx, args) => {
     await ctx.db.insert("stressScores", args);
+  },
+});
+
+export const getStressScores = query({
+  args: { hour: v.number() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("stressScores")
+      .filter((q) => q.eq(q.field("hour"), args.hour))
+      .order("desc")
+      .take(1);
   },
 });
