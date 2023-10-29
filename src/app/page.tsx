@@ -1,7 +1,5 @@
 "use client";
 import { useQuery, useMutation } from "convex/react";
-import { api } from "../../convex/_generated/api";
-
 import SendIcon from "@mui/icons-material/Send";
 import {
   Box,
@@ -13,10 +11,8 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { Delete, DoneAll, AddReaction } from "@mui/icons-material";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import dayjs from "dayjs";
-import { Doc } from "../../convex/_generated/dataModel";
-import Recommended from "./components/Recommended";
 import TaskItem from "./components/TaskItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -26,7 +22,11 @@ import FormHelperText from "@mui/material/FormHelperText";
 import utc from "dayjs/plugin/utc"; // UTC plugin
 import timezone from "dayjs/plugin/timezone";
 import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
+
+import { api } from "../../convex/_generated/api";
 import RecommendedCard from "./components/RecommendedCard";
+import { Doc } from "../../convex/_generated/dataModel";
+import Recommended from "./components/Recommended";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -52,18 +52,33 @@ export default function Home() {
   const [error, setError] = useState(false);
   const [value, setValue] = useState<string | number>("");
   const [touched, setTouched] = useState(false);
+  const [newEventDayOfWeek, setNewEventDayOfWeek] = useState<number>(-1);
+  const [recIndex, setRecIndex] = useState<number>(0);
+  const [refreshing, setRefreshing] = useState<boolean>(false);
 
-  const insights: string[] = [
-    "Your stress levels are peaking during the early hours of the day. Consider incorporating mindfulness techniques such as meditation or deep-breathing exercises to start your day more calmly.",
-    "You seem to have a significant drop in stress levels in the afternoon. Use this time to tackle more challenging tasks that require focus.",
-    "Your sleep quality has been consistently poor. This can affect your stress levels and overall well-being. Consider improving your sleep hygiene.",
-    "The stress levels seem to taper off late at night. Try to avoid stimulating activities that could potentially increase stress before bedtime.",
-    "Your stress and sleep scores indicate that you might be experiencing burnout. It's crucial to address this before it impacts your physical and mental health.",
-    "You have a period of decreased stress mid-day. This could be an optimal time for a short, rejuvenating nap to make up for poor sleep.",
-    "High stress levels can directly impact sleep quality. Consider engaging in relaxing activities like a warm bath, light reading, or listening to calming music before bed.",
-    "Your lowest stress levels are in the late evening. Use this time to prepare for sleep by winding down and disconnecting from electronic devices.",
-    "Poor sleep can exacerbate stress. If you're having trouble sleeping, avoid caffeine and heavy meals in the evening.",
-    "Your data suggests that your current routine is affecting your stress and sleep negatively. Consider consulting a healthcare provider for a comprehensive wellness check.",
+  useEffect(() => {
+    const i = newEventDayOfWeek === -1 ? 0 : newEventDayOfWeek === 1 ? 1 : 2;
+    setRecIndex(i);
+  }, [newEventDayOfWeek]);
+
+  const insights: string[][] = [
+    [
+      "Your stress levels are peaking during the early hours of the day. Consider incorporating mindfulness techniques such as meditation or deep-breathing exercises to start your day more calmly.",
+      "You seem to have a significant drop in stress levels in the afternoon. Use this time to tackle more challenging tasks that require focus.",
+      "Your sleep quality has been consistently poor. This can affect your stress levels and overall well-being. Consider improving your sleep hygiene.",
+      "The stress levels seem to taper off late at night. Try to avoid stimulating activities that could potentially increase stress before bedtime.",
+      "Your stress and sleep scores indicate that you might be experiencing burnout. It's crucial to address this before it impacts your physical and mental health.",
+      "You have a period of decreased stress mid-day. This could be an optimal time for a short, rejuvenating nap to make up for poor sleep.",
+      "High stress levels can directly impact sleep quality. Consider engaging in relaxing activities like a warm bath, light reading, or listening to calming music before bed.",
+      "Your lowest stress levels are in the late evening. Use this time to prepare for sleep by winding down and disconnecting from electronic devices.",
+      "Poor sleep can exacerbate stress. If you're having trouble sleeping, avoid caffeine and heavy meals in the evening.",
+      "Your data suggests that your current routine is affecting your stress and sleep negatively. Consider consulting a healthcare provider for a comprehensive wellness check.",
+    ],
+    [
+      "You already have 2 high-stress tasks on Monday (Board Meeting and Contract Negotiation).",
+      "Consider taking a break in between tasks to relax and recharge, especially before and after the Board Meeting.",
+    ],
+    ["Your schedule looks great. Keep up the good work!"],
   ];
 
   const handleChange = (event: SelectChangeEvent<string | number>) => {
@@ -79,7 +94,7 @@ export default function Home() {
   const hasError = touched && value === "";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isInsightModalOpen, setIsInsightModalOpen] = useState(true);
+  const [isInsightModalOpen, setIsInsightModalOpen] = useState(false);
 
   function cleanString(str: string) {
     const stopwords = [
@@ -295,7 +310,6 @@ export default function Home() {
     const match = input.match(regex);
 
     const final = cleanString(input);
-    final.replace(/\s?(AM|PM)/i, "");
 
     if (match != null && typeof value != "string") {
       const time_taken = parseInt(match[1], 10);
@@ -311,6 +325,11 @@ export default function Home() {
 
     setValue("");
     setInput("");
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+      setNewEventDayOfWeek(date.getDay()); // 0 (Sunday) - 6 (Saturday)
+    }, 2500);
   };
 
   function extractTime(prompt: string): string | null {
@@ -853,15 +872,13 @@ export default function Home() {
                 Insights
               </div>
               <OverlayScrollbarsComponent style={{ height: "400px" }}>
-                {!tasks ? (
+                {refreshing || !tasks ? (
                   <div className="tw-w-full tw-flex tw-justify-center">
                     <CircularProgress />
                   </div>
                 ) : (
                   <div className="tw-text-base tw-space-y-2">
-                    {/* Assuming insights is an array of strings */}
-
-                    {insights.map((insight, index) => (
+                    {insights[recIndex].map((insight, index) => (
                       <div key={index} className="tw-p-1">
                         {insight}
                       </div>
