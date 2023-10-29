@@ -6,10 +6,13 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import { Doc } from "../../convex/_generated/dataModel";
 import TaskItem from "./components/TaskItem";
+import utc from "dayjs/plugin/utc"; // UTC plugin
+import timezone from "dayjs/plugin/timezone";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { getCurrentHourInSanFrancisco } from "../../convex/stressScores";
 
 const darkTheme = createTheme({
   palette: {
@@ -17,14 +20,38 @@ const darkTheme = createTheme({
   },
 });
 
+dayjs.extend(utc);
+dayjs.extend(timezone);
 export default function Home() {
   const tasks = useQuery(api.tasks.get);
   const [input, setInput] = useState("");
+
+  const stressData = useQuery(api.stressScores.getStressScores, {
+    hour: getCurrentHourInSanFrancisco(),
+  });
+  const score = stressData ? stressData[0].score : 0;
+  const lastUpdated = stressData ? stressData[0]._creationTime : 0;
+  const dateTimeUTC = dayjs(lastUpdated);
+
+  // Convert to San Francisco time
+  const dateTimeSF = dateTimeUTC.tz("America/Los_Angeles");
+
+  // Format the date and time
+  const formattedDateTime = dateTimeSF.format("YYYY-MM-DD HH:mm");
+  //   <div className="tw-flex tw-flex-col tw-align-center tw-m-5 gap-5">
+  //   <div className="tw-flex tw-flex-col tw-justify-start tw-items-center tw-mb-8 tw-mt-5 ">
+  //     <div>Current Stress Score</div>
+  //     <div>{score} </div>
+  //   </div>
+  //   <div className="">
+  //     <div>Last Updated</div>
+  //     <div>{formattedDateTime}</div>
+  //   </div>
+  // </div>
+
   if (!tasks) {
     return <div>Loading...</div>;
   }
-
-  console.log(tasks);
 
   const istaskStart = (task: Doc<"tasks">, day: string, hour: number) => {
     const taskStartDay = dayjs(task.startTime).format("ddd");
@@ -37,8 +64,6 @@ export default function Home() {
       const taskStartDay = dayjs(task.startTime).format("ddd");
       const taskStartHour = dayjs(task.startTime).hour();
       const taskEndHour = Number(taskStartHour) + Number(task.duration); // Explicit conversion
-      // console.log(day);
-      console.log(taskStartDay);
 
       return (
         taskStartDay === day &&
