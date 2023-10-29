@@ -18,6 +18,7 @@ import utc from "dayjs/plugin/utc"; // UTC plugin
 import timezone from "dayjs/plugin/timezone";
 import dayjs from "dayjs";
 import RecommendedCard from "../components/RecommendedCard";
+import SpotifyDrawer from "../components/SpotifyDrawer";
 
 ChartJS.register(
   CategoryScale,
@@ -125,21 +126,27 @@ export default function Stats() {
   // Recommended Tasks.
   const recommendeds = [
     {
-      title: "Take a Breather", 
-      description: "Consider taking the time to sit back and relax before your next big task",
-      imageLink: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5eTq3sBaHpSG3iha-L-H1CfmGna5Y0gu6ENcT-3BcIt9ralYeJ-lf2LTOjHkz5hU9uM0&usqp=CAU"
+      title: "Take a Breather",
+      description:
+        "Consider taking the time to sit back and relax before your next big task",
+      imageLink:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ5eTq3sBaHpSG3iha-L-H1CfmGna5Y0gu6ENcT-3BcIt9ralYeJ-lf2LTOjHkz5hU9uM0&usqp=CAU",
     },
     {
-      title: "Powernap", 
-      description: "Taking a well-needed powernap could be the solution to lowering your high stress levels",
-      imageLink: "https://th.bing.com/th/id/OIP.YJc-kuMwxJVCTV9_WrEaVAHaEa?w=272&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7"
+      title: "Powernap",
+      description:
+        "Taking a well-needed powernap could be the solution to lowering your high stress levels",
+      imageLink:
+        "https://th.bing.com/th/id/OIP.YJc-kuMwxJVCTV9_WrEaVAHaEa?w=272&h=180&c=7&r=0&o=5&dpr=1.3&pid=1.7",
     },
     {
-      title: "Meditate", 
-      description: "Meditation is a wonderful method of reconnecting with yourself in a world filled with distractions",
-      imageLink: "https://th.bing.com/th/id/OIP.ljI8sD3kVR3DCW2YevxW0QHaEj?pid=ImgDet&rs=1"
-    }
-  ]
+      title: "Meditate",
+      description:
+        "Meditation is a wonderful method of reconnecting with yourself in a world filled with distractions",
+      imageLink:
+        "https://th.bing.com/th/id/OIP.ljI8sD3kVR3DCW2YevxW0QHaEj?pid=ImgDet&rs=1",
+    },
+  ];
 
   return (
     <div>
@@ -166,17 +173,23 @@ export default function Stats() {
       </div>
 
       <div className="tw-mt-10">
-        <h1 className="tw-text-4xl tw-font-bold tw-text-center">Recommendations</h1>
+        <h1 className="tw-text-4xl tw-font-bold tw-text-center">
+          Recommendations
+        </h1>
         <div className="tw-grid tw-grid-cols-3 tw-justify-items-center tw-items-center tw-mt-10">
-          {recommendeds.map((recommended) => {
-            return <RecommendedCard 
-              title={recommended.title} 
-              description={recommended.description} 
-              imageLink={recommended.imageLink}
-            />
+          {recommendeds.map((recommended, index) => {
+            return (
+              <RecommendedCard
+                key={index}
+                title={recommended.title}
+                description={recommended.description}
+                imageLink={recommended.imageLink}
+              />
+            );
           })}
         </div>
       </div>
+      <SpotifyDrawer stress={stressScore} />
     </div>
   );
 }
