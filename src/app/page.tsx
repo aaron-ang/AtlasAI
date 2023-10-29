@@ -6,6 +6,11 @@ import { useState } from "react";
 import dayjs from "dayjs";
 import { Doc } from "../../convex/_generated/dataModel";
 import TaskItem from "./components/TaskItem";
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import FormHelperText from '@mui/material/FormHelperText';
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -18,16 +23,38 @@ const darkTheme = createTheme({
   },
 });
 
+
+
 export default function Home() {
   const tasks = useQuery(api.tasks.get);
   const sendTasks = useMutation(api.schedule_tasks.send);
   const [input, setInput] = useState("");
+  const [error, setError] = useState(false);
+  const [value, setValue] = useState<string | number>('');
+  const [touched, setTouched] = useState(false);
+
+
+  const handleChange = (event: SelectChangeEvent<string | number>) => {
+  
+  const prior = ['Low', 'Medium', 'High']
+  setValue(event.target.value);
+  for (let i = 0; i < 10; i++){
+    if (prior[i] == value){
+      setValue(i+1)
+    }
+  }
+  
+  };
+
+  const hasError = touched && value === '';
+
+
   if (!tasks) {
     return <div>Loading...</div>;
   }
 
   function cleanString(str: string) {
-    const stopwords = ["around", "hour", "need", "hours", "Monday", "Mon", "Tuesday", "Tue", "got", "Wednesday", "Wed", "Thursday", "Thu","Friday", "Fri","Saturday", "Sat", "Sunday", "Sun", "pm", "takes", "mon", "am" ,"i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now", "want"];
+    const stopwords = ["schedule", "around", "hour", "need", "hours", "Monday", "Mon", "help", "Tuesday", "Tue", "got", "Wednesday", "Wed", "Thursday", "Thu","Friday", "Fri","Saturday", "Sat", "Sunday", "Sun", "pm", "takes", "mon", "am" ,"i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now", "want"];
     const regex = new RegExp(`\\b(${stopwords.join("|")})\\b`, "gi");
     const cleaned = str.replace(regex, '').replace(/\d+/g, '').replace(/\s+/g, ' ').trim();
 
@@ -36,7 +63,14 @@ export default function Home() {
 
   const handleButtonClick = async () => {
     // Do something when the button is clicked
-    console.log('Button clicked, input value:', input);
+    if (input.trim() === '') {
+      setError(true);
+      return
+    } else {
+      setError(false);
+      // Your logic here
+    }
+    
     let dayoweek = '';
     const regex1 = /\b(?:mon(?:day)?|tue(?:sday)?|wed(?:nesday)?|thu(?:rsday)?|fri(?:day)?|sat(?:urday)?|sun(?:day)?)\b/gi;
     let match1;
@@ -69,15 +103,17 @@ export default function Home() {
     const regex = /(\d+)\s*hours?/;
     const match = input.match(regex);
 
-    const result = cleanString(input);
-    const newgex = /(\s?)(am|pm)/gi;
-    const final = result.replace(newgex, '');
-     
-    if (match != null){
-      const time_taken = parseInt(match[1], 10);
-      await sendTasks({startTime: newTimestamp, deadline: '', isFixed: true, title: final, duration: time_taken, priority: 1});;
-    }
+    const final = cleanString(input);
+
+
     
+     
+    if (match != null && typeof value != 'string'){
+      const time_taken = parseInt(match[1], 10);
+      await sendTasks({startTime: newTimestamp, deadline: '', isFixed: true, title: final, duration: time_taken, priority: value});;
+    }
+
+    setValue('');
     setInput('');
   };
 
@@ -143,9 +179,10 @@ export default function Home() {
               width: "100%",
             }}
           >
-            <Typography variant="h6">Tell Edith Your Schedule</Typography>
+            <Typography variant="h6">Give Me a Task</Typography>
 
-            <div className="tw-flex tw-items-center">
+            <div className="tw-flex tw-items-center tw-w-[1000px]">
+            <Box mr={2}>
               <TextField
                 multiline
                 variant="outlined"
@@ -153,18 +190,47 @@ export default function Home() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 fullWidth
+                error={error}
+                helperText={error && "The text field is empty"}
                 sx={{ color: "#fff" }}
               />
-              <Button variant="contained" color="primary" onClick={handleButtonClick}>
+              </Box>
+              <Button variant="contained" color="primary" onClick={handleButtonClick} sx={{ color: "#fff" }}>
                 Send
               </Button>
             </div>
+
+
+          <div className="tw-flex tw-justify-center tw-items-center tw-h-[50]vh">
+            <FormControl variant="outlined" className="tw-w-full pt-[50px]" error={hasError}>
+              <InputLabel id="demo-simple-select-outlined-label">Rank this task by priority</InputLabel>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                value={value}
+                onChange={handleChange}
+                label="Rank this task by priority"
+              >
+                <MenuItem value={1}>Low</MenuItem>
+                <MenuItem value={2}>Medium</MenuItem>
+                <MenuItem value={3}>High</MenuItem>
+              </Select>
+              {hasError && (
+        <FormHelperText>
+          You must select a priority
+        </FormHelperText>
+      )}
+            </FormControl>
+        </div>
+
+
+
           </Box>
         </div>
         <div className="">
           <div>
             <h1 className="tw-w-fit tw-text-xl tw-font-bold tw-text-start  tw-mb-4 tw-ml-auto tw-mr-auto tw-mt-3">
-              AI Planner
+              Edith's Schedule
             </h1>
           </div>
           <div className="tw-flex tw-flex-col  tw-px-6 tw-rounded-lg tw-shadow-md tw-overflow-x-auto tw-text-black tw-h-screen">
