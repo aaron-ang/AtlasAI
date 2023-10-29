@@ -5,4 +5,4 @@
 
 AtlasAI bridges the gap between today's abundance of wearable health data and meaningful, actionable recommendations for our users.
 
-Created for [CalHacks 10.0](https://www.calhacks.io/). View our Devpost submission [here]()!
+Created for [CalHacks 10.0](https://www.calhacks.io/). View our Devpost submission [here](https://devpost.com/software/atlasai)!
