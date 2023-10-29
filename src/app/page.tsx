@@ -445,7 +445,6 @@ export default function Home() {
                         key={index}
                         title={recommended.title}
                         description={recommended.description}
-                        imageLink={recommended.imageLink}
                       />
                     );
                   })}
