@@ -1,13 +1,7 @@
 import { httpAction, internalMutation, query } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { v } from "convex/values";
-
-interface HeartSummaryData {
-  avg_hrv_sdnn: number;
-  avg_hr_bpm: number;
-  max_hr_bpm: number;
-  min_hr_bpm: number;
-}
+import { calculateSleepData } from "./sleepScores";
 
 export function getCurrentHourInSanFrancisco(): number {
   // Get current UTC time in milliseconds
@@ -70,6 +64,16 @@ export const getTerraAPI = httpAction(async (ctx, request) => {
       hour: currentHour,
       score: stress,
     });
+  } else if (type === "sleep") {
+    const sleepData = data.data[0];
+    const sleep = calculateSleepData(sleepData);
+
+    const currentHour = getCurrentHourInSanFrancisco();
+
+    await ctx.runMutation(internal.sleepScores.addSleepScores, {
+      hour: currentHour,
+      score: sleep,
+    });
   } else {
     console.log("Type is not available in the request body.");
   }
@@ -93,10 +97,6 @@ export const addStressScores = internalMutation({
 export const getStressScores = query({
   args: { hour: v.number() },
   handler: async (ctx, args) => {
-    return await ctx.db
-      .query("stressScores")
-      .filter((q) => q.eq(q.field("hour"), args.hour))
-      .order("desc")
-      .take(1);
+    return await ctx.db.query("stressScores").order("desc").take(1);
   },
 });

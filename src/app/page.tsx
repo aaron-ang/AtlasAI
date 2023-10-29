@@ -32,12 +32,12 @@ export default function Home() {
   const stressData = useQuery(api.stressScores.getStressScores, {
     hour: getCurrentHourInSanFrancisco(),
   });
-  // const score = stressData ? stressData[0].score : 0;
-  // const lastUpdated = stressData ? stressData[0]._creationTime : 0;
-  // const dateTimeUTC = dayjs(lastUpdated);
+  const score = stressData ? stressData[0].score : 0;
+  const lastUpdated = stressData ? stressData[0]._creationTime : 0;
+  const dateTimeUTC = dayjs(lastUpdated);
 
   // Convert to San Francisco time
-  // const dateTimeSF = dateTimeUTC.tz("America/Los_Angeles");
+  const dateTimeSF = dateTimeUTC.tz("America/Los_Angeles");
 
   // Format the date and time
   // const formattedDateTime = dateTimeSF.format("YYYY-MM-DD HH:mm");
