@@ -1,13 +1,14 @@
 "use client";
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, Modal, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import dayjs from "dayjs";
 import { Doc } from "../../convex/_generated/dataModel";
 import TaskItem from "./components/TaskItem";
 import utc from "dayjs/plugin/utc"; // UTC plugin
 import timezone from "dayjs/plugin/timezone";
+import { OverlayScrollbarsComponent } from "overlayscrollbars-react";
 
 const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -29,15 +30,15 @@ export default function Home() {
   const stressData = useQuery(api.stressScores.getStressScores, {
     hour: getCurrentHourInSanFrancisco(),
   });
-  const score = stressData ? stressData[0].score : 0;
-  const lastUpdated = stressData ? stressData[0]._creationTime : 0;
-  const dateTimeUTC = dayjs(lastUpdated);
+  // const score = stressData ? stressData[0].score : 0;
+  // const lastUpdated = stressData ? stressData[0]._creationTime : 0;
+  // const dateTimeUTC = dayjs(lastUpdated);
 
   // Convert to San Francisco time
-  const dateTimeSF = dateTimeUTC.tz("America/Los_Angeles");
+  // const dateTimeSF = dateTimeUTC.tz("America/Los_Angeles");
 
   // Format the date and time
-  const formattedDateTime = dateTimeSF.format("YYYY-MM-DD HH:mm");
+  // const formattedDateTime = dateTimeSF.format("YYYY-MM-DD HH:mm");
   //   <div className="tw-flex tw-flex-col tw-align-center tw-m-5 gap-5">
   //   <div className="tw-flex tw-flex-col tw-justify-start tw-items-center tw-mb-8 tw-mt-5 ">
   //     <div>Current Stress Score</div>
@@ -101,6 +102,49 @@ export default function Home() {
             </div>
           </Box>
         </div>
+        <Modal
+          open={true}
+          onClose={() => {}}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              marginLeft: "auto",
+              marginRight: "auto",
+              marginTop: "50px",
+              width: 700,
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            <div className="tw-flex tw-items-center tw-justify-center ">
+              <Typography variant="h4">Reccomendations</Typography>
+            </div>
+            <div className="tw-flex tw-justify-between">
+              <OverlayScrollbarsComponent
+                style={{ height: "400px", width: "300px" }}
+              >
+                <div>sdfdfs</div>
+                <div>sdfdfs</div>
+                <div>sdfdfs</div>
+                <div>sdfdfs</div>
+                <div>sdfdfs</div>
+              </OverlayScrollbarsComponent>
+              <OverlayScrollbarsComponent
+                style={{ height: "400px", width: "300px" }}
+              >
+                <div>sdfdfs</div>
+                <div>sdfdfs</div>
+                <div>sdfdfs</div>
+                <div>sdfdfs</div>
+                <div>sdfdfs</div>
+              </OverlayScrollbarsComponent>
+            </div>
+          </Box>
+        </Modal>
         <div className="">
           <div>
             <h1 className="tw-w-fit tw-text-xl tw-font-bold tw-text-start  tw-mb-4 tw-ml-auto tw-mr-auto tw-mt-3">
@@ -110,7 +154,7 @@ export default function Home() {
           <div className="tw-flex tw-flex-col  tw-px-6 tw-rounded-lg tw-shadow-md tw-overflow-x-auto tw-text-black tw-h-screen">
             <div className="tw-grid tw-grid-cols-25 tw-w-fit tw-ml-auto tw-mr-auto">
               {/* Hour Labels */}
-              <div className="tw-sticky tw-top-0 tw-z-[100]  ">
+              <div className="tw-sticky tw-top-0 tw-z-[100] tw-bg-gray-900  ">
                 <div className="tw-flex tw-flex-row tw-w-max tw-justify-between tw-align-center ">
                   <div className="tw-h-12 tw-flex tw-items-center tw-justify-start tw-w-[50px] tw-text-white"></div>
                   <div className="tw-flex tw-row tw-item-center tw-w-full tw-justify-start ">
