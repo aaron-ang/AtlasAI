@@ -44,10 +44,9 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 export default function Home() {
   const tasks = useQuery(api.tasks.get);
-
   const reccos = useQuery(api.recommendedTasks.get);
-
   const sendTasks = useMutation(api.schedule_tasks.send);
+
   const [input, setInput] = useState("");
   const [error, setError] = useState(false);
   const [value, setValue] = useState<string | number>("");

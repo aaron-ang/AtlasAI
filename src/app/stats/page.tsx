@@ -118,7 +118,7 @@ export default function Stats() {
       {
         data: dataSet,
         backgroundColor: dataSet.map((value) =>
-          value > 50 ? "rgba(255, 99, 132, 0.5)" : "rgba(53, 162, 235, 0.5)"
+          value > 27 ? "rgba(255, 99, 132, 0.5)" : "rgba(53, 162, 235, 0.5)"
         ),
       },
     ],
